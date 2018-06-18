@@ -1,18 +1,26 @@
-import {send,json } from 'micro'
-import { router, get, post } from 'microrouter'
+import { send, json } from 'micro'
+import { router, get, post, put, del, } from 'microrouter'
 
-let legos = [
-  { name: "President Business", price: 9.99, isActive: true}
-]
-
+import Legos from './db/legos'
 
 export default router(
-  get('/', async (req, res) => await send(res, 200, legos)),
+  get('/', async (req, res) => {
+    const results = await Legos.find({})
+    await send(res, 200, results)
+  }),
   post('/', async (req, res) => {
+    console.log(`I'm called`)
+
     // throw Error('Blah')
     const figure = await json(req)
-    legos = [...legos, figure]
-    return send(res, 201, figure)
+    const result = await Legos.insert(figure)
+    return send(res, 201, result)
   }),
-  get('/*', (req, res) => send(res, 404, 'Not found route'))
+  get('/:id', async (req, res) => send(res, 200, {})),
+  put('/:id', async (req, res) => send(res, 200, {})),
+  del('/:id', async (req, res) => {
+    const id = req.params.id
+    return send(res, 200, {})
+  }),
+  get('/*', (req, res) => send(res, 404, 'Not found route')),
 )
