@@ -17,7 +17,16 @@ export default cors(router(
     const result = await Legos.insert(figure)
     return send(res, 201, result)
   }),
-  get('/:id', async (req, res) => send(res, 200, {})),
+  // get('/:id', async (req, res) => send(res, 200, {})),
+  get('/:id', async (req, res) => {
+    const _id = req.params.id
+    const lego = await Legos.findOne({ _id })
+
+    if(!lego) {
+      return send(res, 404, { message: `Figure not found ${_id}`})
+    }
+    return send(res, 200, lego)
+  }),
   put('/:id', async (req, res) => send(res, 200, {})),
   del('/:id', async (req, res) => {
     const id = req.params.id
