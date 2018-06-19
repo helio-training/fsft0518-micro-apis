@@ -1,9 +1,10 @@
 import { send, json } from 'micro'
 import { router, get, post, put, del, } from 'microrouter'
+const cors = require('micro-cors')()
 
 import Legos from './db/legos'
 
-export default router(
+export default cors(router(
   get('/', async (req, res) => {
     const results = await Legos.find({})
     await send(res, 200, results)
@@ -23,4 +24,4 @@ export default router(
     return send(res, 200, {})
   }),
   get('/*', (req, res) => send(res, 404, 'Not found route')),
-)
+))
